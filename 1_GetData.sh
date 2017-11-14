@@ -23,6 +23,7 @@ echo "2. Getting MetaData"
 
 cd ../
 mkdir Metadata/
+cat /mnt/research/common-data/Bio/Trimmomatic/adapters/* > alladaptors.fa
 cp -r /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/Metadata/ Metadata/OriginalFiles/
 mv Metadata/OriginalFiles/PlateInfoSeq/ Metadata/PlateInfoSeq/
 mv Metadata/OriginalFiles/SequencerQC Metadata/SequencerQC
@@ -50,14 +51,13 @@ mkdir fastQC/RawFQC
 mkdir fastQC/TrimmedFQC
 
 #Build indicies for mapping
-cd ProcessRadtags/Indicies
-qsub ../../congenial-parakeet/1.1_BT2_build.qsub
+cd ProcessRadtags/Indicies || exit
+qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT
 
 cd ../../RawFastq/
 
 ThisT=`ls *fastq.gz | wc -w`
-ThisT=`expr $ThisT - 1`
 
-qsub ../congenial-parakeet/1.1_FastQC.qsub -t 0-${ThisT}
+#qsub ../congenial-parakeet/1.1_FastQC.qsub -t 0-${ThisT}
 
-qsub ../congenial-parakeet/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
+qsub ../congenial-parakeet/1.1_ProcessRadtags.qsub -N ProcessingRads -t 1-${ThisT}
