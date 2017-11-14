@@ -23,12 +23,7 @@ module load SAMTools/1.2
 
 cd ${PBS_O_WORKDIR} || exit #Go to directory with sequencing files
 
-filelist=(*trimmed.fq) #Get a list of all sequencing files
-
-indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
-
-bsname=${PBS_ARRAYID}_${indiv}
-
+indiv=${PBS_JOBNAME} #assign indiv to be current sequence file
 
 #Then launch metadata collector, once per reference per dataset
 
@@ -49,21 +44,10 @@ fi
 
 cd ${MapFolder}/ || exit
 
-echo bsname="${bsname}"
+echo bsname="${indiv}"
 
 if [[ ! -f ${indiv}.bam ]]
  then bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${indiv}.sam
  samtools view -q 20 -b -T ${genome} ${indiv}.sam > ${indiv}_q20.bam
 fi
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
-
-# Calculate next job to run
-NEXT=$(( ${PBS_ARRAYID} + 200 ))
-
-
-#Check to see if next job is past the maximum job id
-if [ ${NEXT} -le ${MAXJOBID} ]
-then
-    cd ${PBS_O_WORKDIR} || exit
-    qsub ../congenial-parakeet/1.2_BT2Map.qsub -N ${MapFolder} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
-fi

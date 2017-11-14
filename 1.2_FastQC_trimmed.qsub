@@ -24,22 +24,10 @@ module load pandoc/1.17.3
 
 #Run FastQC again
 
-filelist=(*trimmed.fq) #get list of sequencing lanes
 
-fastqfile=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
+fastqfile=${PBS_JOBNAME} #assign indiv to be current sequence file
 
 fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}
-
-# Calculate next job to run
-NEXT=$(( ${PBS_ARRAYID} + 20 ))
-JOBSCRIPT=../congenial-parakeet/1.2_FastQC_trimmed.qsub
-
-#Check to see if next job is past the maximum job id
-if [ ${NEXT} -le ${MAXJOBID} ]
-then
-    cd ${PBS_O_WORKDIR} || exit
-    qsub -t ${NEXT} ${JOBSCRIPT} -v MAXJOBID=${MAXJOBID}
-fi
 
 cd ../fastQC/TrimmedFastQC/ || exit
 
