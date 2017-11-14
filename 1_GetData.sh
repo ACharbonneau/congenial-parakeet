@@ -57,7 +57,7 @@ qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT
 cd ../../RawFastq/
 
 ThisT=`ls *fastq.gz | wc -w`
-
+ThisT=`expr ${fqT} - 1`
 #qsub ../congenial-parakeet/1.1_FastQC.qsub -t 0-${ThisT}
 
-qsub ../congenial-parakeet/1.1_ProcessRadtags.qsub -N ProcessingRads -t 1-${ThisT}
+qsub ../congenial-parakeet/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
