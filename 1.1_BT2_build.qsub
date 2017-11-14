@@ -18,9 +18,6 @@
 
 module load bowtie2/2.2.6
 
-bowtie2-build /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta Moghe2014_BT
-
-
 if [ "$PBS_JOBNAME" == "notset" ]
   then
   echo "please set the job name"
