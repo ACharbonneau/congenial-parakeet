@@ -26,4 +26,4 @@ fi
 
 cd ${PBS_O_WORKDIR} || exit
 
-bowtie2-build ${genome} BowtieIndicies/${PBS_JOBNAME} #build index
+bowtie2-build ${genome} ${PBS_JOBNAME} #build index
