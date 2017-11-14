@@ -32,7 +32,7 @@ fastqc -o ../fastQC/TrimmedFQC/ ${fastqfile}
 
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 20 ))
-JOBSCRIPT=../supreme-octo-disco/1.2_FastQC_trimmed.qsub
+JOBSCRIPT=../congenial-parakeet/1.2_FastQC_trimmed.qsub
 
 #Check to see if next job is past the maximum job id
 if [ ${NEXT} -le ${MAXJOBID} ]
@@ -46,5 +46,5 @@ cd ../fastQC/TrimmedFastQC/ || exit
 qcs=$(cat *.zip | wc -l)
 
 if [ ${qcs} = 1440 ]
-  then Rscript ../../supreme-octo-disco/1.2.1_FastQC_aggregate.R
+  then Rscript ../../congenial-parakeet/1.2.1_FastQC_aggregate.R
 fi

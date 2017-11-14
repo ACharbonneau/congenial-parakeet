@@ -33,7 +33,7 @@ bsname=${PBS_ARRAYID}_${indiv}
 #Then launch metadata collector, once per reference per dataset
 
 if [[ ${PBS_ARRAYID} = 0 ]]
-then qsub ../supreme-octo-disco/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
+then qsub ../congenial-parakeet/1.3_echo.qsub -N ${PBS_JOBNAME}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
 fi
 
 #Run bowtie2
@@ -46,25 +46,16 @@ fi
 # -L <int>           length of seed substrings; must be >3, <32 (22)
 # -i <func>          interval between seed substrings w/r/t read len (S,1,1.15)
 
-mkdir ${PBS_JOBNAME}
 
 cd ${MapFolder}/ || exit
 
 echo bsname="${bsname}"
 
-if [[ ! -f ${indiv}.sam ]]
+if [[ ! -f ${indiv}.bam ]]
  then bowtie2 --end-to-end --sensitive -x ../${index} -U ../${indiv} -p 8 -S ${indiv}.sam
- samtools view -q 20 -T ${genome} ${indiv}.sam > ${indiv}_q20.sam
- echo ${bsname} >> FilesMapped.txt
+ samtools view -q 20 -b -T ${genome} ${indiv}.sam > ${indiv}_q20.bam
 fi
 #--sensitive            -D 15 -R 2 -N 0 -L 22 -i S,1,1.15 (default)
-
-runs=$(cat FilesMapped.txt | wc -l)
-
-if [[ ! -f ${indiv}_q20.sam ]]
-then qsub ../../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${PBS_ARRAYID} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder="${MapFolder}"
-fi
-
 
 # Calculate next job to run
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
@@ -74,26 +65,5 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR} || exit
-    qsub ../supreme-octo-disco/1.2_BT2Map.qsub -N ${MapFolder} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
-fi
-
-#Launch first step of STACKS if all the mapping is done
-
-
-#if [ ${runs} = 1440 ]
-#then bash ../../supreme-octo-disco/1.4_SubmitSTACKS.sh
-#fi
-
-#Then launch metadata collector, once per reference per dataset
-
-if [[ ${PBS_ARRAYID} = 0 ]]
-then cd ${PBS_O_WORKDIR} || exit
-qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
-fi
-
-#Then launch metadata collector, once per reference per dataset
-
-if [[ ${PBS_ARRAYID} = 0 ]]
-then cd ${PBS_O_WORKDIR} || exit
-qsub ../supreme-octo-disco/1.3_echo.qsub -N ${MapFolder}.metadata -v genome="${genome}",index="${index}",gff="${gff}",bsname="${bsname}",gffi="${gffi}",exon="${exon}"
+    qsub ../congenial-parakeet/1.2_BT2Map.qsub -N ${MapFolder} -t ${NEXT} -v genome="${genome}",gff="${gff}",gffi="Parent",exon="exon",stranded="no",MAXJOBID="${MAXJOBID}",index="${index}",MapFolder=${MapFolder}
 fi

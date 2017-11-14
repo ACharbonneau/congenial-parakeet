@@ -43,5 +43,5 @@ fqT=`ls *.fq | wc -w`
 fqT=`expr ${fqT} - 1`
 
 if [[ ${fqT} = 1439 ]]
-then qsub ../congenial-parakeet/1.1_Trimmomatic.qsub -N TrimmingReads -v MAXJOBID=${fqT}
+then qsub ../congenial-parakeet/1.1_Trimmomatic.qsub -N TrimmingReads -t 0-200 -v MAXJOBID=${fqT}
 fi
