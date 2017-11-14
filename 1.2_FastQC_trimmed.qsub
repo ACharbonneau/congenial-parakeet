@@ -15,7 +15,7 @@
 
 
 #Starting in GBS/ProcessRadtags/
-cd ${PBS_O_WORKDIR}
+cd ${PBS_O_WORKDIR} || exit
 
 source ~/.bash_profile
 module load FastQC/0.11.3
@@ -37,11 +37,11 @@ JOBSCRIPT=../supreme-octo-disco/1.2_FastQC_trimmed.qsub
 #Check to see if next job is past the maximum job id
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
-    cd ${PBS_O_WORKDIR}
+    cd ${PBS_O_WORKDIR} || exit
     qsub -t ${NEXT} ${JOBSCRIPT} -v MAXJOBID=${MAXJOBID}
 fi
 
-cd ../fastQC/TrimmedFastQC/
+cd ../fastQC/TrimmedFastQC/ || exit
 
 qcs=$(cat *.zip | wc -l)
 

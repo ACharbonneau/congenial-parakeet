@@ -17,9 +17,7 @@
 source ~/.bash_profile
 
 #Starting in GBS/RawFastq/
-cd ${PBS_O_WORKDIR}
-
-ThisT=`ls *fastq.gz | wc -w`
+cd ${PBS_O_WORKDIR} || exit
 
 filelist=(*fastq.gz) #get list of sequencing lanes
 

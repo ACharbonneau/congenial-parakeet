@@ -1,7 +1,7 @@
 echo "1. Getting Raw Files"
 
 mkdir RawFastq
-cd RawFastq
+cd RawFastq || exit
 
 ln -sf /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C6G98ANXX_8_fastq.gz .
 ln -sf /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C6P86ANXX_4_fastq.gz .
@@ -21,20 +21,20 @@ ln -sf /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/C81
 
 echo "2. Getting MetaData"
 
-cd ../
+cd ../ || exit
 mkdir Metadata/
 cat /mnt/research/common-data/Bio/Trimmomatic/adapters/* > alladaptors.fa
 cp -r /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/Metadata/ Metadata/OriginalFiles/
 mv Metadata/OriginalFiles/PlateInfoSeq/ Metadata/PlateInfoSeq/
 mv Metadata/OriginalFiles/SequencerQC Metadata/SequencerQC
-cd Metadata/PlateInfoSeq/
+cd Metadata/PlateInfoSeq/ || exit
 mv QTL_F2_8.txt C6G98ANXX_8_fastq.gz.keys.txt
-cd ../../congenial-parakeet/
+cd ../../congenial-parakeet/ || exit
 module load R/3.2.0
 R --file=1.1_metadatamunge.R
-cd ../Metadata/PlateInfoSeq/
-for i in `ls *.unique.txt`; do cut -f 3,20 ${i} > `echo ${i} | sed s/.unique.txt/_fastq.gz.barcodes/` ; done
-cd ../../
+cd ../Metadata/PlateInfoSeq/ || exit
+for i in  *.unique.txt; do cut -f 3,20 ${i} > `echo ${i} | sed s/.unique.txt/_fastq.gz.barcodes/` ; done
+cd ../../ || exit
 
 echo "3. Setting up workspace"
 
@@ -54,7 +54,7 @@ mkdir fastQC/TrimmedFQC
 cd ProcessRadtags/Indicies || exit
 qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT
 
-cd ../../RawFastq/
+cd ../../RawFastq/ || exit
 
 ThisT=`ls *fastq.gz | wc -w`
 ThisT=`expr ${fqT} - 1`
