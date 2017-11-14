@@ -52,7 +52,7 @@ mkdir fastQC/TrimmedFQC
 
 #Build indicies for mapping
 cd ProcessRadtags/Indicies || exit
-qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT
+qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta
 
 cd ../../RawFastq/ || exit
 
