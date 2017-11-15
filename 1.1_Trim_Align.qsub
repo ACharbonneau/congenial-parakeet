@@ -31,7 +31,7 @@ java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} ${tr
 bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 8 -S ${trimmedfile}.sam
 samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
 samtools sort ${trimmedfile}_q20.bam -O bam -o ${trimmedfile}_q20.sorted.bam
-samtools index ${trimmedfile}_q20.sorted.bam 
+samtools index ${trimmedfile}_q20.sorted.bam
 
 # Calculate next job to run
 
@@ -41,7 +41,7 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR} || exit
-    qsub ../congenial-parakeet/1.1_Trimmomatic.qsub -t ${NEXT}
+    qsub ../congenial-parakeet/1.1_Trim_Align.qsub -t ${NEXT}
 fi
 
 #qsub ../congenial-parakeet/1.2_FastQC_trimmed.qsub -N ${PBS_JOBNAME} -v MAXJOBID=${fqT}
