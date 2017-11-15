@@ -30,6 +30,8 @@ java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} ${tr
 
 bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 8 -S ${trimmedfile}.sam
 samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
+samtools sort ${trimmedfile}_q20.bam -O bam -o ${trimmedfile}_q20.sorted.bam
+samtools index ${trimmedfile}_q20.sorted.bam 
 
 # Calculate next job to run
 
