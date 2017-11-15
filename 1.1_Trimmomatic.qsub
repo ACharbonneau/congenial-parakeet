@@ -14,6 +14,8 @@
 # -t 0-? : job numbers for array submission
 
 module load Trimmomatic/0.33
+module load bowtie2/2.2.6
+module load SAMTools/1.2
 
 cd ${PBS_O_WORKDIR} || exit
 
@@ -21,10 +23,13 @@ filelist=(*[0-9].fq) #Get a list of all sequencing files
 
 indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
+trimmedfile=`basename ${indiv} .fq`.trimmed.fq
 
-java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} `basename ${indiv} .fq`.trimmed.fq ILLUMINACLIP:../MetaData/alladaptors.fa:2:30:10 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
+java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} ${trimmedfile} ILLUMINACLIP:../Metadata/alladaptors.fa:2:30:10 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
 
-qsub ../congenial-parakeet/1.2_BT2Map.qsub -N `basename ${indiv} .fq`.trimmed.fq -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
+
+bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 8 -S ${trimmedfile}.sam
+samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
 
 # Calculate next job to run
 
@@ -37,7 +42,7 @@ then
     qsub ../congenial-parakeet/1.1_Trimmomatic.qsub -t ${NEXT}
 fi
 
-qsub ../congenial-parakeet/1.2_FastQC_trimmed.qsub -N ${PBS_JOBNAME} -v MAXJOBID=${fqT}
+#qsub ../congenial-parakeet/1.2_FastQC_trimmed.qsub -N ${PBS_JOBNAME} -v MAXJOBID=${fqT}
 ## Expect 1425 individuals after processing plus 15 blanks
 
 #fqT=`ls *trimmed.fq | wc -w`
