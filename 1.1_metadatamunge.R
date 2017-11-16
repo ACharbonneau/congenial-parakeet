@@ -286,7 +286,7 @@ write.table(paste( " -s ./", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_l
 All_SS <- paste(All_SS, ".sam", sep = "")
 
 write.table(All_SS, file = "../Metadata/SS_stacks_list", quote = F, col.names = F, row.names = F)
-All_SS <- gsub("_q20.sam","", All_SS )  
+All_SS <- gsub("_q20.sam","", All_SS )
 write.table(All_SS, file = "../Metadata/SS_stacks_fastqs", quote = F, col.names = F, row.names = F)
 
 

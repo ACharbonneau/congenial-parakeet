@@ -41,7 +41,7 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR} || exit
-    qsub ../congenial-parakeet/1.1_Trim_Align.qsub -t ${NEXT}
+    qsub ../congenial-parakeet/1.1_Trim_Align.qsub -N TrimmingReads -t ${NEXT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
 fi
 
 #qsub ../congenial-parakeet/1.2_FastQC_trimmed.qsub -N ${PBS_JOBNAME} -v MAXJOBID=${fqT}
