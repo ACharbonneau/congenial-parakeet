@@ -19,7 +19,6 @@
 # Furthermore the ID names change subtley between datasheets.
 # This script just munges the metadata into one useable format with unique IDs.
 
-#It also makes the two .pop files needed for STACKS
 
 rm(list = ls())
 
@@ -144,22 +143,12 @@ AE_F2_DNA <- left_join(AE_F2_DNA, Pedigree)
 write.csv(x = AE_F2_DNA, file = "../Metadata/AE_F2_merge.csv")
 
 
-# Write out STACKS metadata
-# Each version of the analysis needs three files:
-
-# ${name}_stacks_list is a one column matrix where each row is
-#                     a single samfile WITH the file extension
-
-# ${name}_stacks_fastqs is a one column matrix where each row is
-#                     a single fastq WITH the file extension
+# Write out metadata for running subsets
+# I need a file for each subset that I can feed into samtools or similar:
+# a file of filenames, one file per line
 
 
-# ${name}_cs_stacks_list is a single line list, where each individual is listed with a -s flag
-#                        and the path to its samfile WITHOUT the file extension: -s 14766_QTL_F2_12_D09.fq_q20
-
-# [SS or AE]_data.pop is a three column, tab-delimited matrix, where each row is a single samfile
-#                     WITHOUT the file extension then a pop/cross ID, then a species/pedigree ID
-#                     All the AE runs can use the same file for this one, so it's only made once.
+# This is the filenames with two columns of metatdata
 
 ForStacksAE <- rbind(select(AE_F2_DNA, ID, Cross, Type_Year),
       select(AE_F0_DNA, ID, Cross, Type_Year),
@@ -169,7 +158,7 @@ ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASa
 
 ForStacksAEUniq <- unique(ForStacksAEUniq)
 
-ForStacksAEUniq$UniqID <- paste(ForStacksAEUniq$UniqID, ".fq_q20", sep = "")
+ForStacksAEUniq$UniqID <- paste(ForStacksAEUniq$UniqID, ".trimmed.fq_q20.sorted.bam", sep = "")
 
 write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_data.pop",
             quote = F, sep = "\t", col.names = F, row.names = F)
@@ -195,39 +184,27 @@ Just_F2s <- ForStacksAEUniq$UniqID[ForStacksAEUniq$Cross == "KF2" |
                                      ForStacksAEUniq$Cross == "RXF2" ]
 
 
-write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -s ./", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+#These would make a single line of individuals with a flag between
 
-write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
+#write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+#write.table(paste( " -s ./", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+#write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+
+#write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+#write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
 
 
-write.table(paste( " -p ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "")
-write.table(paste( " -r ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "", append = T)
+#write.table(paste( " -p ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "")
+#write.table(paste( " -r ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "", append = T)
 
-Just_F0s <- paste(Just_F0s, ".sam", sep = "")
-Just_F1s <- paste(Just_F1s, ".sam", sep = "")
-Just_F2s <- paste(Just_F2s, ".sam", sep = "")
+#These are the files for samtools
 
-write.table(Just_F0s, file = "../Metadata/AE_F0_stacks_list", quote = F, col.names = F, row.names = F)
-write.table(Just_F1s, file = "../Metadata/AE_F1_stacks_list", quote = F, col.names = F, row.names = F)
-write.table(Just_F2s, file = "../Metadata/AE_F2_stacks_list", quote = F, col.names = F, row.names = F)
+write.table(Just_F0s, file = "../Metadata/AE_F0_list", quote = F, col.names = F, row.names = F)
+write.table(Just_F1s, file = "../Metadata/AE_F1_list", quote = F, col.names = F, row.names = F)
+write.table(Just_F2s, file = "../Metadata/AE_F2_list", quote = F, col.names = F, row.names = F)
 
-write.table(Just_F0s, file = "../Metadata/AE_Mapping_stacks_list", quote = F, col.names = F, row.names = F)
-write.table(Just_F2s, file = "../Metadata/AE_Mapping_stacks_list", quote = F, col.names = F, row.names = F, append = T)
-
-Just_F0s <- gsub("_q20.sam","", Just_F0s )
-Just_F1s <- gsub("_q20.sam","", Just_F1s )
-Just_F2s <- gsub("_q20.sam","", Just_F2s )
-
-write.table(Just_F0s, file = "../Metadata/AE_F0_stacks_fastqs", quote = F, col.names = F, row.names = F)
-write.table(Just_F1s, file = "../Metadata/AE_F1_stacks_fastqs", quote = F, col.names = F, row.names = F)
-write.table(Just_F2s, file = "../Metadata/AE_F2_stacks_fastqs", quote = F, col.names = F, row.names = F)
-
-write.table(Just_F0s, file = "../Metadata/AE_Mapping_stacks_fastqs", quote = F, col.names = F, row.names = F)
-write.table(Just_F2s, file = "../Metadata/AE_Mapping_stacks_fastqs", quote = F, col.names = F, row.names = F, append = T)
-
+write.table(Just_F0s, file = "../Metadata/AE_Mapping_list", quote = F, col.names = F, row.names = F)
+write.table(Just_F2s, file = "../Metadata/AE_Mapping_list", quote = F, col.names = F, row.names = F, append = T)
 
 
 ## STACKS for signatures of selection
@@ -238,56 +215,37 @@ ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
 ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample"))
 ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 
-ForStacksSSUniq$UniqID <- paste(ForStacksSSUniq$UniqID, ".fq_q20", sep = "")
+ForStacksSSUniq$UniqID <- paste(ForStacksSSUniq$UniqID, ".trimmed.fq_q20.sorted.bam", sep = "")
 
 write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop",
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 # Just RRR data
 Just_Rrr <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrr"]
-write.table(paste( " -s ./", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-Just_Rrr <- paste(Just_Rrr, ".sam", sep = "")
-write.table(Just_Rrr, file = "../Metadata/SS_Rrr_stacks_list", quote = F, col.names = F, row.names = F)
-Just_Rrr <- gsub("_q20.sam","", Just_Rrr )
-write.table(Just_Rrr, file = "../Metadata/SS_Rrr_stacks_fastqs", quote = F, col.names = F, row.names = F)
+#write.table(paste( " -s ./", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(Just_Rrr, file = "../Metadata/SS_Rrr_list", quote = F, col.names = F, row.names = F)
 
 #Just landra
 Just_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrl"]
-write.table(paste( " -s ./", Just_landra, sep=""), file = "../Metadata/SS_Rrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-Just_landra <- paste(Just_landra, ".sam", sep = "")
-write.table(Just_landra, file = "../Metadata/SS_Rrl_stacks_list", quote = F, col.names = F, row.names = F)
-Just_landra <- gsub("_q20.sam","", Just_landra )
-write.table(Just_landra, file = "../Metadata/SS_Rrl_stacks_fastqs", quote = F, col.names = F, row.names = F)
+#write.table(paste( " -s ./", Just_landra, sep=""), file = "../Metadata/SS_Rrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(Just_landra, file = "../Metadata/SS_Rrl_list", quote = F, col.names = F, row.names = F)
 
 #Just crops
 Just_Rsat <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rsat"]
-write.table(paste( " -s ./", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-Just_Rsat <- paste(Just_Rsat, ".sam", sep = "")
-write.table(Just_Rsat, file = "../Metadata/SS_Rsat_stacks_list", quote = F, col.names = F, row.names = F)
-Just_Rsat <- gsub("_q20.sam","", Just_Rsat )
-write.table(Just_Rsat, file = "../Metadata/SS_Rsat_stacks_fastqs", quote = F, col.names = F, row.names = F)
+#write.table(paste( " -s ./", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(Just_Rsat, file = "../Metadata/SS_Rsat_list", quote = F, col.names = F, row.names = F)
 
 #RRR and landra
 Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrr" | ForStacksSSUniq$Species.x == "Rrl"]
-write.table(paste( " -s ./", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-Rrr_landra <- paste(Rrr_landra, ".sam", sep = "")
-write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_stacks_list", quote = F, col.names = F, row.names = F)
-Rrr_landra <- gsub("_q20.sam","", Rrr_landra )
-write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_stacks_fastqs", quote = F, col.names = F, row.names = F)
+#write.table(paste( " -s ./", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_list", quote = F, col.names = F, row.names = F)
 
 
 
 
 #All signature of selection
 All_SS <- ForStacksSSUniq$UniqID
-
-write.table(paste( " -s ./", All_SS, sep=""), file = "../Metadata/SS_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-
-All_SS <- paste(All_SS, ".sam", sep = "")
-
-write.table(All_SS, file = "../Metadata/SS_stacks_list", quote = F, col.names = F, row.names = F)
-All_SS <- gsub("_q20.sam","", All_SS )
-write.table(All_SS, file = "../Metadata/SS_stacks_fastqs", quote = F, col.names = F, row.names = F)
+write.table(All_SS, file = "../Metadata/SS_list", quote = F, col.names = F, row.names = F)
 
 
 
