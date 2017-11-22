@@ -25,14 +25,16 @@ indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 trimmedfile=`basename ${indiv} .fq`.trimmed.fq
 
-java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} ${trimmedfile} ILLUMINACLIP:../Metadata/alladaptors.fa:2:30:10 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
+if [ ! -f ${trimmedfile}_q20.sorted.bam ]
+then
+  java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} ${trimmedfile} ILLUMINACLIP:../Metadata/alladaptors.fa:2:30:10 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
 
 
-bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 8 -S ${trimmedfile}.sam
-samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
-samtools sort ${trimmedfile}_q20.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob
-samtools index ${trimmedfile}_q20.sorted.bam
-
+  bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 8 -S ${trimmedfile}.sam
+  samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
+  samtools sort ${trimmedfile}_q20.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob
+  samtools index ${trimmedfile}_q20.sorted.bam
+fi
 # Calculate next job to run
 
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
