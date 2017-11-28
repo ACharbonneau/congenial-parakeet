@@ -1,3 +1,5 @@
+#!/bin/sh
+
 echo "1. Getting Raw Files"
 
 mkdir RawFastq
@@ -42,7 +44,7 @@ echo "3. Setting up workspace"
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
 mkdir ProcessRadtags/MogheMap
-mkdir ProcessRadtags/OrgFQ
+mkdir ProcessRadtags/TrimmedFQC
 
 
 
@@ -54,7 +56,8 @@ mkdir fastQC/TrimmedFQC
 
 #Build indicies for mapping
 cd ProcessRadtags/Indicies || exit
-qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta
+ln -sf /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta .
+qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT -v genome=RrContigs.fa.fasta
 
 cd ../../RawFastq/ || exit
 

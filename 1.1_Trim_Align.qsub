@@ -13,9 +13,13 @@
 # -r n : tells it not to re-run the script in the case of an error (so it doesn't overwrite any results generated)
 # -t 0-? : job numbers for array submission
 
+source ~/.bash_profile
+
 module load Trimmomatic/0.33
 module load bowtie2/2.2.6
-module load SAMTools/1.2
+module load SAMTools/1.5
+module load GATK/3.7.0
+
 
 cd ${PBS_O_WORKDIR} || exit
 
@@ -30,10 +34,15 @@ then
   java -jar $TRIM/trimmomatic SE -threads 16 -trimlog ./${indiv}.log ${indiv} ${trimmedfile} ILLUMINACLIP:../Metadata/alladaptors.fa:2:30:10 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
 
 
-  bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 8 -S ${trimmedfile}.sam
-  samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
-  samtools sort ${trimmedfile}_q20.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob
-  samtools index ${trimmedfile}_q20.sorted.bam
+  bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 16 -S ${trimmedfile}.sam
+  samtools view -nthreads=16 -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
+  samtools addreplacerg -nthreads=16 -r "@RG\tID:`basename ${trimmedfile} .trimmed.fq`\tPG:samtools addreplacerg\tSM:`basename ${trimmedfile} .trimmed.fq`" -o ${trimmedfile}_q20_name.bam ${trimmedfile}_q20.bam
+  samtools sort ${trimmedfile}_q20_name.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob -nthreads=16
+  java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${trimmedfile}_q20.sorted.bam -o ${trimmedfile}.intervals -nt 16
+  java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T IndelRealigner -R ${genome} -I ${trimmedfile}_q20.sorted.bam -targetIntervals ${trimmedfile}.intervals -o ${trimmedfile}_realigned.bam -nt 16
+  java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R ${genome} -I ${trimmedfile}_realigned.bam -o ${trimmedfile}_recal.table -nt 16
+  java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T PrintReads -R ${genome} -I <lane.bam> --BSQR ${trimmedfile}_recal.table -o ${trimmedfile}_q20.final.bam -nt 16
+  samtools index ${trimmedfile}_q20.final.bam -nthreads=16
 fi
 # Calculate next job to run
 
@@ -43,15 +52,16 @@ NEXT=$(( ${PBS_ARRAYID} + 200 ))
 if [ ${NEXT} -le ${MAXJOBID} ]
 then
     cd ${PBS_O_WORKDIR} || exit
-    qsub ../congenial-parakeet/1.1_Trim_Align.qsub -N TrimmingReads -t ${NEXT} -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
+    qsub ../congenial-parakeet/1.1_Trim_Align.qsub -N TrimmingReads -t ${NEXT} -v genome=Indicies/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
 fi
 
 #qsub ../congenial-parakeet/1.2_FastQC_trimmed.qsub -N ${PBS_JOBNAME} -v MAXJOBID=${fqT}
 ## Expect 1425 individuals after processing plus 15 blanks
 
-#fqT=`ls *trimmed.fq | wc -w`
+#fqT=`ls *_q20.final.bam | wc -w`
 #fqT=`expr ${fqT} - 1`
 #
 #if [[ ${fqT} = 1439 ]]
 #then
+#  qsub ../congenial-parakeet/2_launchSNPcaller.sh
 #fi

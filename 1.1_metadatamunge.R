@@ -158,7 +158,7 @@ ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASa
 
 ForStacksAEUniq <- unique(ForStacksAEUniq)
 
-ForStacksAEUniq$UniqID <- paste(ForStacksAEUniq$UniqID, ".trimmed.fq_q20.sorted.bam", sep = "")
+ForStacksAEUniq$UniqID <- paste(ForStacksAEUniq$UniqID, ".trimmed.fq_q20.final.bam", sep = "")
 
 write.table(x = select(ForStacksAEUniq, UniqID, Cross, Type_Year), file = "../Metadata/AE_data.pop",
             quote = F, sep = "\t", col.names = F, row.names = F)
@@ -215,7 +215,7 @@ ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
 ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample"))
 ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 
-ForStacksSSUniq$UniqID <- paste(ForStacksSSUniq$UniqID, ".trimmed.fq_q20.sorted.bam", sep = "")
+ForStacksSSUniq$UniqID <- paste(ForStacksSSUniq$UniqID, ".trimmed.fq_q20.final.bam", sep = "")
 
 write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop",
             quote = F, sep = "\t", col.names = F, row.names = F)

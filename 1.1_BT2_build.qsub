@@ -15,8 +15,11 @@
 
 #Starting in GBS/ProcessRadtags/Indicies
 
+source ~/.bash_profile
 
 module load bowtie2/2.2.6
+module load picardTools/1.89
+
 
 if [ "$PBS_JOBNAME" == "notset" ]
   then
@@ -27,3 +30,11 @@ fi
 cd ${PBS_O_WORKDIR} || exit
 
 bowtie2-build ${genome} ${PBS_JOBNAME} #build index
+
+# also build dictionary for GATK
+
+java -jar $PICARD/CreateSequenceDictionary.jar R=${genome} O=`basename ${genome} .fasta`.dict
+
+# and a fasta index
+
+samtools faidx ${genome}

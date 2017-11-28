@@ -43,5 +43,5 @@ fqT=`ls *[0-9].fq | wc -w`
 fqT=`expr ${fqT} - 1`
 
 if [[ ${fqT} = 1439 ]]
-then qsub ../congenial-parakeet/1.1_Trim_Align.qsub -N TrimmingReads -t 0-200 -v genome=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
+then qsub ../congenial-parakeet/1.1_Trim_Align.qsub -N TrimmingReads -t 0-200 -v genome=Indicies/RrContigs.fa.fasta,gff=/mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/Rr_gene_pseu.gff.mod,gffi="Parent",exon="exon",stranded="no",MAXJOBID=${fqT},index=Indicies/Moghe2014_BT,MapFolder="MogheMap"
 fi
