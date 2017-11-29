@@ -19,6 +19,8 @@ module load Trimmomatic/0.33
 module load bowtie2/2.2.6
 module load SAMTools/1.5
 module load GATK/3.7.0
+module load picardTools/1.89
+
 
 
 cd ${PBS_O_WORKDIR} || exit
@@ -35,14 +37,16 @@ then
 
 
   bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 16 -S ${trimmedfile}.sam
-  samtools view -nthreads=16 -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
-  samtools addreplacerg -nthreads=16 -r "@RG\tID:`basename ${trimmedfile} .trimmed.fq`\tPG:samtools addreplacerg\tSM:`basename ${trimmedfile} .trimmed.fq`" -o ${trimmedfile}_q20_name.bam ${trimmedfile}_q20.bam
-  samtools sort ${trimmedfile}_q20_name.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob -nthreads=16
+  samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
+  #samtools addreplacerg -r "@RG\tID:`basename ${trimmedfile} .trimmed.fq`\tPG:samtools addreplacerg\tSM:`basename ${trimmedfile} .trimmed.fq`" -o ${trimmedfile}_q20_name.bam ${trimmedfile}_q20.bam
+  java -jar $PICARD/AddOrReplaceReadGroups.jar I=${trimmedfile}_q20.bam O=${trimmedfile}_q20_name.bam RGID=${PBS_ARRAYID} RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=`basename ${trimmedfile} .trimmed.fq`
+  samtools sort ${trimmedfile}_q20_name.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${trimmedfile}_q20.sorted.bam -o ${trimmedfile}.intervals -nt 16
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T IndelRealigner -R ${genome} -I ${trimmedfile}_q20.sorted.bam -targetIntervals ${trimmedfile}.intervals -o ${trimmedfile}_realigned.bam -nt 16
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R ${genome} -I ${trimmedfile}_realigned.bam -o ${trimmedfile}_recal.table -nt 16
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T PrintReads -R ${genome} -I <lane.bam> --BSQR ${trimmedfile}_recal.table -o ${trimmedfile}_q20.final.bam -nt 16
-  samtools index ${trimmedfile}_q20.final.bam -nthreads=16
+  samtools index ${trimmedfile}_q20.final.bam
+
 fi
 # Calculate next job to run
 
