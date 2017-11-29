@@ -44,3 +44,6 @@ bcftools mpileup -O u -x -q 20 --threads 20 -a FORMAT/AD,FORMAT/ADF,FORMAT/ADR,F
 
 # This is filtering based on per individual depths. Much better
 bcftools view  -i  'MIN(FMT/DP)>3 & MAX(FMT/DP)<100' ${subset}.raw.vcf.gz -O z -o ${subset}.bcf.filtered.vcf.gz --threads 20
+
+#java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R ${genome} -I ${subset}_realigned.bam -o ${subset}_recal.table
+#java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T PrintReads -R ${genome} -I <lane.bam> --BSQR ${trimmedfile}_recal.table -o ${trimmedfile}_q20.final.bam -nt 20
