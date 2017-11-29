@@ -20,7 +20,7 @@ subset=`basename ${subset_list} _list`
 # and the new multiallelic calling model (-m/--multiallelic-caller). The multiallelic
 # calling model is recommended for most tasks.
 
-samtools -nthreads=20 merge -b ${subset_list} -f ${subset}.bam
+samtools merge -b ${subset_list} -f ${subset}.bam
 
 java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${subset}.bam -o ${subset}.intervals -nt 20
 java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T IndelRealigner -R ${genome} -I ${subset}.bam -targetIntervals ${subset}.intervals -o ${subset}_realigned.bam -nt 20
