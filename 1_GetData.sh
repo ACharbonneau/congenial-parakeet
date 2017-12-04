@@ -25,7 +25,7 @@ echo "2. Getting MetaData"
 
 cd ../ || exit
 mkdir Metadata/
-cat /mnt/research/common-data/Bio/Trimmomatic/adapters/* > alladaptors.fa
+ln -sf /mnt/research/radishGenomics/PublicData/alladaptors.fa .
 cp -r /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/Metadata/ Metadata/OriginalFiles/
 mv Metadata/OriginalFiles/PlateInfoSeq/ Metadata/PlateInfoSeq/
 mv Metadata/OriginalFiles/SequencerQC Metadata/SequencerQC
