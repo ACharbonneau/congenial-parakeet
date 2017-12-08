@@ -31,6 +31,7 @@ samtools index ${subset}.bam
 java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${subset}.bam -o ${subset}.intervals -nt 20
 java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T IndelRealigner -R ${genome} -I ${subset}.bam -targetIntervals ${subset}.intervals -o ${subset}_realigned.bam
 
+
 bcftools mpileup -O u -x -q 20 --threads 20 -a FORMAT/AD,FORMAT/ADF,FORMAT/ADR,FORMAT/DP,FORMAT/SP,INFO/AD,INFO/ADF,INFO/ADR -F -m=3 -p -f ${genome} ${subset}_realigned.bam | bcftools call -mO z -o ${subset}.raw.vcf.gz --threads 20
 #samtools mpileup -u -x -q 20 -O -s -t DP -t SP -t AD -t INFO/AD -t ADF -t INFO/ADF -t ADR -t INFO/ADR -t INFO/DPR -t DV -F -m 3 -p -f ${genome} --bam-list ${subset_list} | bcftools call -mO z -o ${subset}.raw.vcf.gz
 

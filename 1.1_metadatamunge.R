@@ -35,27 +35,6 @@ packages(plyr)
 packages(dplyr)
 
 
-
-## They sequenced lots of samples twice, but used the same names, which breaks
-## the deconvolution step. This loop gives each sample a unique name and writes
-## out a new sequence list file for each lane with the unique names
-
-Geno_dir <- file.path("../Metadata/PlateInfoSeq/")
-
-Geno_list <- list.files(Geno_dir, pattern = "*gz.keys.txt")
-
-All_geno_data <- list()
-
-for( X in 1:length(Geno_list)){
-  TempFile <- read.table(paste(Geno_dir, Geno_list[ X ], sep=""), sep = "\t", header = T, na.strings = "")
-  TempFile$UniqID <- paste(TempFile$DNASample, TempFile$DNA_Plate, TempFile$SampleDNA_Well, sep="_")
-  All_geno_data[[X]] <- TempFile
-  write.table(TempFile, paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
-}
-
-
-All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
-
 ## Get global data frames
 
 DNA_data <- read.csv("../Metadata/OriginalFiles/MetadataAll.txt", sep = "\t", header = F,
@@ -74,6 +53,32 @@ DNA_data$Cross <- revalue(DNA_data$Cross, c("YEIL_CLNC" = "YEIL"))
 DNA_data <- droplevels(DNA_data)
 
 Pedigree <- read.csv("../Metadata/OriginalFiles/Pedigree.csv", colClasses = "factor")
+
+
+## They sequenced lots of samples twice, but used the same names, which breaks
+## the deconvolution step. This loop gives each sample a unique name and writes
+## out a new sequence list file for each lane with the unique names
+
+Geno_dir <- file.path("../Metadata/PlateInfoSeq/")
+
+Geno_list <- list.files(Geno_dir, pattern = "*gz.keys.txt")
+
+All_geno_data <- list()
+
+for( X in 1:length(Geno_list)){
+  TempFile <- read.table(paste(Geno_dir, Geno_list[ X ], sep=""), sep = "\t", header = T, na.strings = "")
+  TempFile$UniqID <- paste(TempFile$DNASample, gsub( '.*_([0-9]{1,2})', "\\1", TempFile$LibraryPlate, ignore.case = FALSE ), TempFile$SampleDNA_Well, "F", sep=".")
+  ComboTemp <- left_join(TempFile, DNA_data, by=c("DNASample"="ID"))
+  All_geno_data[[X]] <- ComboTemp
+  write.table(select(ComboTemp, -Pedigree, -Population, -SeedLot), paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
+  write.table(cbind(as.character(ComboTemp$Barcode), paste(ComboTemp$Cross, ComboTemp$UniqID, sep="_")), paste(Geno_dir, substr(Geno_list[X], 1, 11), "_fastq.gz.barcodes", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
+}
+
+rm(TempFile, ComboTemp)
+
+All_geno_data <- tbl_df( do.call( "rbind", All_geno_data ))
+
+
 
 # Get F0 data and combine
 
@@ -154,7 +159,7 @@ ForStacksAE <- rbind(select(AE_F2_DNA, ID, Cross, Type_Year),
       select(AE_F0_DNA, ID, Cross, Type_Year),
       select(AE_F1_DNA, ID, Cross, Type_Year))
 
-ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASample"))
+ForStacksAEUniq <- dplyr::left_join(ForStacksAE, All_geno_data, by=c("ID"="DNASample", "Cross"="Cross", "Type_Year"="Type_Year"))
 
 ForStacksAEUniq <- unique(ForStacksAEUniq)
 
@@ -212,31 +217,31 @@ write.table(Just_F2s, file = "../Metadata/AE_Mapping_list", quote = F, col.names
 ForStacksSS <- filter( DNA_data, Type_Year == "SigSelection") %>%
   select(ID, Cross, Species)
 
-ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample"))
+ForStacksSSUniq <- dplyr::left_join(ForStacksSS, All_geno_data, by=c("ID"="DNASample", "Cross"="Cross"))
 ForStacksSSUniq <- droplevels(ForStacksSSUniq)
 
 ForStacksSSUniq$UniqID <- paste(ForStacksSSUniq$UniqID, ".trimmed.fq_q20.final.bam", sep = "")
 
-write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.x), file = "../Metadata/SS_data.pop",
+write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.y), file = "../Metadata/SS_data.pop",
             quote = F, sep = "\t", col.names = F, row.names = F)
 
 # Just RRR data
-Just_Rrr <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrr"]
+Just_Rrr <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr"]
 #write.table(paste( " -s ./", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Just_Rrr, file = "../Metadata/SS_Rrr_list", quote = F, col.names = F, row.names = F)
 
 #Just landra
-Just_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrl"]
+Just_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrl"]
 #write.table(paste( " -s ./", Just_landra, sep=""), file = "../Metadata/SS_Rrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Just_landra, file = "../Metadata/SS_Rrl_list", quote = F, col.names = F, row.names = F)
 
 #Just crops
-Just_Rsat <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rsat"]
+Just_Rsat <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rsat"]
 #write.table(paste( " -s ./", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Just_Rsat, file = "../Metadata/SS_Rsat_list", quote = F, col.names = F, row.names = F)
 
 #RRR and landra
-Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.x == "Rrr" | ForStacksSSUniq$Species.x == "Rrl"]
+Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr" | ForStacksSSUniq$Species.x == "Rrl"]
 #write.table(paste( " -s ./", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_list", quote = F, col.names = F, row.names = F)
 
@@ -270,7 +275,7 @@ command <- select(command, cp, UniqID, Folder)
 # Write out full data with phenotypes for SigSelection
 
 FullSS <- filter( DNA_data, Type_Year == "SigSelection")
-FullSSUniq <- dplyr::left_join(FullSS, All_geno_data, by=c("ID"="DNASample"))
+FullSSUniq <- dplyr::left_join(FullSS, All_geno_data, by=c("ID"="DNASample", "Cross"="Cross", "Type_Year"="Type_Year"))
 FullSSUniq <- droplevels(FullSSUniq)
 
 GeographyList <- c(AFFR="France", AROL="NA", BINY="nonNative", DEES="Spain", ESNK="NA",
