@@ -37,7 +37,7 @@ then
   bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 20 -S ${trimmedfile}.sam
   samtools view -q 20 -b -T ${genome} ${trimmedfile}.sam > ${trimmedfile}_q20.bam
   #samtools addreplacerg -r "@RG\tID:`basename ${trimmedfile} .trimmed.fq`\tPG:samtools addreplacerg\tSM:`basename ${trimmedfile} .trimmed.fq`" -o ${trimmedfile}_q20_name.bam ${trimmedfile}_q20.bam
-  java -jar $PICARD/AddOrReplaceReadGroups.jar I=${trimmedfile}_q20.bam O=${trimmedfile}_q20_name.bam RGID=${PBS_ARRAYID} RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=`basename ${trimmedfile} .trimmed.fq`
+  java -jar $PICARD/AddOrReplaceReadGroups.jar I=${trimmedfile}_q20.bam O=${trimmedfile}_q20_name.bam RGLB="lib1" RGPL="illumina" RGPU="unit1" RGSM=`basename ${trimmedfile} .trimmed.fq` RGID="${PBS_ARRAYID}"
   samtools sort ${trimmedfile}_q20_name.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob
   samtools index ${trimmedfile}_q20.sorted.bam
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${trimmedfile}_q20.sorted.bam -o ${trimmedfile}.intervals -nt 20

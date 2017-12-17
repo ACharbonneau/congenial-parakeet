@@ -17,4 +17,4 @@ subset=`basename ${subset_list} _list`
 
 maxdepth=`expr ${n80} \* 50`
 
-angsd -b ${subset_list} -GL 1 -doMajorMinor 1 -doCounts -doQsDist -doDepth -doMaf 2 -P 20 -minMapQ 30 -minQ 20 -minMaf 0.05 -minInd ${n80} -minIndDepth 3 -setMaxDepth ${maxdepth} -snp_pval 1e-2 -dosnpstat 1 -out ${subset}_angsd
+angsd -b ${subset_list} -GL 1 -doMajorMinor 1 -doCounts -doQsDist -doDepth -doMaf 2 -P 20 -minMapQ 30 -minQ 20 -minMaf 0.05 -minInd ${n80} -minIndDepth 3 -setMaxDepth ${maxdepth} -snp_pval 1e-2 -dosnpstat 1 -hwe_pva 1e-2 -out ${subset}_angsd
