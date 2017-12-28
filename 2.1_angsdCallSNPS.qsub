@@ -16,4 +16,6 @@ cd ${PBS_O_WORKDIR} || exit
 subset=`basename ${subset_list} _list`
 
 
-angsd -P 20  -bam ${subset_list} -GL 1 -doCounts 1 -doMaf 8 -doDepth 1 -doQsDist 1 -doGlf 1 -doMajorMinor 1 -doGeno 8 -doPost 1  -dosnpstat 1 -minQ 15 -minMapQ 20 -minMaf 0.05 -setMaxDepthInd 100 -minInd  ${n80}  -snp_pval 1e-2 -hwe_pval 1e-2  -out ${subset}_angsd
+angsd -P 20  -bam ${subset_list} -GL 1 -doCounts 1 -doMaf 8 -doDepth 1 -doQsDist 1 -doGlf 1 -doMajorMinor 1 -doGeno 8 -doPost 1 -minQ 15 -minMapQ 20 -minMaf 0.05 -setMaxDepthInd 100 -minInd  ${n80} -out ${subset}_angsd
+
+angsd -bam ${subset_list} -domaf 1 -domajorminor 1 -gl 1 -snp_pval 1e-2  -P 5 -dosnpstat 1 -hwe_pval 1e-2 -out ${subset}_snp_angsd
