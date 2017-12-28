@@ -15,14 +15,5 @@ cd ${PBS_O_WORKDIR} || exit
 
 subset=`basename ${subset_list} _list`
 
-maxdepth=`expr ${n80} \* 50`
 
-angsd -b ${subset_list} -GL 1 -doMajorMinor 1 -P 20 -minMapQ 30 -minQ 20 -minMaf 0.05 -minInd ${n80} -minIndDepth 3 -setMaxDepth ${maxdepth} -dosnpstat -snp_pval 1e-2  1 -hwe_pva 1e-2 -out ${subset}_MM_angsd
-
-angsd -b ${subset_list} -doCounts -P 20 -minMapQ 30 -minQ 20 -minMaf 0.05 -minInd ${n80} -minIndDepth 3 -setMaxDepth ${maxdepth} -dosnpstat -snp_pval 1e-2  1 -hwe_pva 1e-2 -out ${subset}_Count_angsd
-
-angsd -b ${subset_list} -doDepth -P 20 -minMapQ 30 -minQ 20 -minMaf 0.05 -minInd ${n80} -minIndDepth 3 -setMaxDepth ${maxdepth} -dosnpstat -snp_pval 1e-2  1 -hwe_pva 1e-2 -out ${subset}_Depth_angsd
-
-angsd -b ${subset_list} -doQsDist -P 20 -minMapQ 30 -minQ 20 -minMaf 0.05 -minInd ${n80} -minIndDepth 3 -setMaxDepth ${maxdepth} -dosnpstat -snp_pval 1e-2  1 -hwe_pva 1e-2 -out ${subset}_QS_angsd
-
-angsd -b ${subset_list} -doMaf 2 -P 20 -minMapQ 30 -minQ 20 -minMaf 0.05 -minInd ${n80} -minIndDepth 3 -setMaxDepth ${maxdepth} -dosnpstat -snp_pval 1e-2  1 -hwe_pva 1e-2 -out ${subset}_Maf_angsd
+angsd -P 20  -bam ${subset_list} -GL 1 -doCounts 1 -doMaf 8 -doDepth 1 -doQsDist 1 -doGlf 1 -doMajorMinor 1 -doGeno 8 -doPost 1  -dosnpstat 1 -minQ 15 -minMapQ 20 -minMaf 0.05 -setMaxDepthInd 100 -minInd  ${n80}  -snp_pval 1e-2 -hwe_pval 1e-2  -out ${subset}_angsd
