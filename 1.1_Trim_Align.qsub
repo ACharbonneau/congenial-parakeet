@@ -31,7 +31,7 @@ indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 trimmedfile=`basename ${indiv} .fq`.trimmed.fq
 
-if [ ! -f ${trimmedfile}_q20.final.bam ]
+if [ ! -f ${trimmedfile}_q20.sorted.bam ]
 then
   java -jar $TRIM/trimmomatic SE -threads 20 -trimlog ./${indiv}.log ${indiv} ${trimmedfile} ILLUMINACLIP:../Metadata/alladaptors.fa:2:7:7 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
   bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 20 -S ${trimmedfile}.sam
@@ -39,6 +39,10 @@ then
   #samtools addreplacerg -r "@RG\tID:`basename ${trimmedfile} .trimmed.fq`\tPG:samtools addreplacerg\tSM:`basename ${trimmedfile} .trimmed.fq`" -o ${trimmedfile}_q20_name.bam ${trimmedfile}_q20.bam
   java -jar $PICARD/AddOrReplaceReadGroups.jar I=${trimmedfile}_q20.bam O=${trimmedfile}_q20_name.bam RGLB="lib1" RGPL="illumina" RGPU="unit1" RGSM=`basename ${trimmedfile} .trimmed.fq` RGID="${PBS_ARRAYID}"
   samtools sort ${trimmedfile}_q20_name.bam -O bam -o ${trimmedfile}_q20.sorted.bam -T bob
+fi
+
+if [ ! -f ${trimmedfile}_q20.final.bam ]
+then
   samtools index ${trimmedfile}_q20.sorted.bam
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${trimmedfile}_q20.sorted.bam -o ${trimmedfile}.intervals -nt 20
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T IndelRealigner -R ${genome} -I ${trimmedfile}_q20.sorted.bam -targetIntervals ${trimmedfile}.intervals -o ${trimmedfile}_q20.final.bam
