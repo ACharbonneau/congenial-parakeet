@@ -31,7 +31,7 @@ indiv=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
 trimmedfile=`basename ${indiv} .fq`.trimmed.fq
 
-if [ ! -f ${trimmedfile}_q20.sorted.bam ]
+if [ ! -f ${trimmedfile}_q20.final.bam ]
 then
   java -jar $TRIM/trimmomatic SE -threads 20 -trimlog ./${indiv}.log ${indiv} ${trimmedfile} ILLUMINACLIP:../Metadata/alladaptors.fa:2:7:7 LEADING:3 TRAILING:3 MAXINFO:20:0.5 MINLEN:50
   bowtie2 --end-to-end --sensitive -x ${index} -U ${trimmedfile} -p 20 -S ${trimmedfile}.sam
@@ -43,8 +43,13 @@ then
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${trimmedfile}_q20.sorted.bam -o ${trimmedfile}.intervals -nt 20
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T IndelRealigner -R ${genome} -I ${trimmedfile}_q20.sorted.bam -targetIntervals ${trimmedfile}.intervals -o ${trimmedfile}_q20.final.bam
   samtools index ${trimmedfile}_q20.final.bam
+fi
+
+if [ ! -f ${trimmedfile}_raw_variants.vcf ]
+then
   java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T --genotyping_mode DISCOVERY -stand_emit_conf 15 -stand_call_conf 20 -R ${genome} -I ${trimmedfile}_q20.final.bam -o ${trimmedfile}_raw_variants.vcf
 fi
+
 # Calculate next job to run
 
 NEXT=$(( ${PBS_ARRAYID} + 200 ))
