@@ -1,6 +1,6 @@
 #!/bin/sh -login
 #PBS -j oe
-#PBS -l nodes=1:ppn=20,walltime=04:00:00,mem=10gb
+#PBS -l nodes=1:ppn=28,walltime=04:00:00,mem=10gb
 #PBS -m a
 #PBS -l feature='intel16'
 
@@ -28,11 +28,11 @@ subset=`basename ${subset_list} _list`
 samtools merge -b ${subset_list} -f ${subset}.bam
 samtools index ${subset}.bam
 
-java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${subset}.bam -o ${subset}.intervals -nt 20
+java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R ${genome} -I ${subset}.bam -o ${subset}.intervals -nt 28
 java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T IndelRealigner -R ${genome} -I ${subset}.bam -targetIntervals ${subset}.intervals -o ${subset}_realigned.bam
 
 
-bcftools mpileup -O u -x -q 20 --threads 20 -a FORMAT/AD,FORMAT/ADF,FORMAT/ADR,FORMAT/DP,FORMAT/SP,INFO/AD,INFO/ADF,INFO/ADR -F 0.002 -m=3 -p -f ${genome} ${subset}_realigned.bam | bcftools call -mO z -v -o ${subset}.raw.vcf.gz --threads 20
+bcftools mpileup -O u -x -q 20 --threads 28 -a FORMAT/AD,FORMAT/ADF,FORMAT/ADR,FORMAT/DP,FORMAT/SP,INFO/AD,INFO/ADF,INFO/ADR -F 0.002 -m=3 -p -f ${genome} ${subset}_realigned.bam | bcftools call -mO z -v -o ${subset}.raw.vcf.gz --threads 20
 #samtools mpileup -u -x -q 20 -O -s -t DP -t SP -t AD -t INFO/AD -t ADF -t INFO/ADF -t ADR -t INFO/ADR -t INFO/DPR -t DV -F -m 3 -p -f ${genome} --bam-list ${subset_list} | bcftools call -mO z -o ${subset}.raw.vcf.gz
 
 #tabix -p vcf ${subset}.raw.vcf.gz
@@ -49,7 +49,7 @@ bcftools mpileup -O u -x -q 20 --threads 20 -a FORMAT/AD,FORMAT/ADF,FORMAT/ADR,F
 
 
 # This is filtering based on per individual depths. Much better
-bcftools view  -i  'MIN(FMT/DP)>2 & MAX(FMT/DP)<100' --min-ac 1:minor -v snps ${subset}.raw.vcf.gz -O z -o ${subset}.bcf.filtered.vcf.gz --threads 20
+bcftools view  -i  'MIN(FMT/DP)>2 & MAX(FMT/DP)<100' --min-ac 1:minor -v snps ${subset}.raw.vcf.gz -O z -o ${subset}.bcf.filtered.vcf.gz --threads 28
 
 
 #java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T BaseRecalibrator -R ${genome} -I ${subset}_realigned.bam -o ${subset}_recal.table
