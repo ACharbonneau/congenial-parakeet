@@ -49,9 +49,9 @@ then
   samtools index ${trimmedfile}_q20.final.bam
 fi
 
-if [ ! -f ${trimmedfile}_raw_variants.vcf ]
+if [ ! -f ${trimmedfile}_raw_variants.g.vcf ]
 then
-  java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T HaplotypeCaller --genotyping_mode DISCOVERY -R ${genome} -I ${trimmedfile}_q20.final.bam -o ${trimmedfile}_raw_variants.vcf
+  java -Xmx10g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T HaplotypeCaller --genotyping_mode DISCOVERY --emitRefConfidence GVCF -R ${genome} -I ${trimmedfile}_q20.final.bam -o ${trimmedfile}_raw_variants.g.vcf
 fi
 
 # Calculate next job to run
