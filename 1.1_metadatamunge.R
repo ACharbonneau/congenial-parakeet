@@ -189,18 +189,6 @@ Just_F2s <- ForStacksAEUniq$UniqID[ForStacksAEUniq$Cross == "KF2" |
                                      ForStacksAEUniq$Cross == "RXF2" ]
 
 
-#These would make a single line of individuals with a flag between
-
-#write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_F0_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-#write.table(paste( " -s ./", Just_F1s, sep=""), file = "../Metadata/AE_F1_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-#write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_F2_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-
-#write.table(paste( " -s ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
-#write.table(paste( " -s ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
-
-
-#write.table(paste( " -p ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "")
-#write.table(paste( " -r ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "", append = T)
 
 #These are the files for samtools
 
@@ -210,6 +198,23 @@ write.table(Just_F2s, file = "../Metadata/AE_F2_list", quote = F, col.names = F,
 
 write.table(Just_F0s, file = "../Metadata/AE_Mapping_list", quote = F, col.names = F, row.names = F)
 write.table(Just_F2s, file = "../Metadata/AE_Mapping_list", quote = F, col.names = F, row.names = F, append = T)
+
+Just_F0s <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Just_F0s, ignore.case = FALSE )
+Just_F1s <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Just_F1s, ignore.case = FALSE )
+Just_F2s <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Just_F2s, ignore.case = FALSE )
+
+#These make a single line of individuals with a flag between
+
+write.table(paste( " --variant ", Just_F0s, sep=""), file = "../Metadata/AE_F0_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " --variant ", Just_F1s, sep=""), file = "../Metadata/AE_F1_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " --variant ", Just_F2s, sep=""), file = "../Metadata/AE_F2_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
+
+write.table(paste( " --variant ", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " --variant ", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_gatk_list", quote = F, col.names = F, row.names = F, eol = "", append = T)
+
+
+#write.table(paste( " -p ./", Just_F0s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "")
+#write.table(paste( " -r ./", Just_F2s, sep=""), file = "../Metadata/AE_Mapping_cs_stacks_geno", quote = F, col.names = F, row.names = F, eol = "", append = T)
 
 
 ## STACKS for signatures of selection
@@ -227,23 +232,27 @@ write.table(x = select(ForStacksSSUniq, UniqID, Cross, Species.y), file = "../Me
 
 # Just RRR data
 Just_Rrr <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr"]
-#write.table(paste( " -s ./", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Just_Rrr, file = "../Metadata/SS_Rrr_list", quote = F, col.names = F, row.names = F)
+Just_Rrr  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Just_Rrr, ignore.case = FALSE )
+write.table(paste( " --variant ", Just_Rrr, sep=""), file = "../Metadata/SS_Rrr_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
 #Just landra
 Just_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrl"]
-#write.table(paste( " -s ./", Just_landra, sep=""), file = "../Metadata/SS_Rrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Just_landra, file = "../Metadata/SS_Rrl_list", quote = F, col.names = F, row.names = F)
+Just_landra  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Just_landra, ignore.case = FALSE )
+write.table(paste( " --variant ", Just_landra, sep=""), file = "../Metadata/SS_Rrl_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
 #Just crops
 Just_Rsat <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rsat"]
-#write.table(paste( " -s ./", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Just_Rsat, file = "../Metadata/SS_Rsat_list", quote = F, col.names = F, row.names = F)
+Just_Rsat   <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Just_Rsat, ignore.case = FALSE )
+write.table(paste( " --variant ", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
 #RRR and landra
 Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr" | ForStacksSSUniq$Species.x == "Rrl"]
-#write.table(paste( " -s ./", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_cs_stacks_list", quote = F, col.names = F, row.names = F, eol = "")
 write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_list", quote = F, col.names = F, row.names = F)
+Rrr_landra  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Rrr_landra, ignore.case = FALSE )
+write.table(paste( " --variant ", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
 
 
@@ -251,6 +260,8 @@ write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_list", quote = F, col.name
 #All signature of selection
 All_SS <- ForStacksSSUniq$UniqID
 write.table(All_SS, file = "../Metadata/SS_list", quote = F, col.names = F, row.names = F)
+All_SS  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", All_SS, ignore.case = FALSE )
+write.table(paste( " --variant ", All_SS, sep=""), file = "../Metadata/SS_all_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
 
 
