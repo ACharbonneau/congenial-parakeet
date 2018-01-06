@@ -69,10 +69,11 @@ for( X in 1:length(Geno_list)){
   TempFile <- read.table(paste(Geno_dir, Geno_list[ X ], sep=""), sep = "\t", header = T, na.strings = "")
   TempFile$UniqID <- paste(TempFile$DNASample, gsub( '.*_([0-9]{1,2})', "\\1", TempFile$LibraryPlate, ignore.case = FALSE ), TempFile$SampleDNA_Well, "F", sep=".")
   ComboTemp <- left_join(TempFile, DNA_data, by=c("DNASample"="ID"))
+  ComboTemp$UniqID <- paste(ComboTemp$Cross, ComboTemp$UniqID, sep="_")
   All_geno_data[[X]] <- ComboTemp
   write.table(select(ComboTemp, -Pedigree, -Population, -SeedLot), paste(Geno_dir, substr(Geno_list[X], 1, 11), ".unique.txt", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
-  write.table(cbind(as.character(ComboTemp$Barcode), paste(ComboTemp$Cross, ComboTemp$UniqID, sep="_")), paste(Geno_dir, substr(Geno_list[X], 1, 11), "_fastq.gz.barcodes", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
-}
+  write.table(cbind(as.character(ComboTemp$Barcode), ComboTemp$UniqID), paste(Geno_dir, substr(Geno_list[X], 1, 11), "_fastq.gz.barcodes", sep=""), sep="\t", row.names=F, col.names=F, quote=F)
+  }
 
 rm(TempFile, ComboTemp)
 

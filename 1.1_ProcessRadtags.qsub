@@ -23,7 +23,7 @@ filelist=(*fastq.gz) #get list of sequencing lanes
 
 lane=${filelist[${PBS_ARRAYID}]} #assign indiv to be current sequence file
 
-barcode=`basename ${lane} .fastq`.barcodes
+barcode=`basename ${lane}`.barcodes
 
 PBS_JOBNAME=${PBS_JOBNAME}_${lane} #rename job to job_indiv
 

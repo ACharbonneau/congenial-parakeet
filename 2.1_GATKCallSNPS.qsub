@@ -1,0 +1,21 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=28,walltime=04:00:00,mem=10gb
+#PBS -m a
+#PBS -l feature='intel16'
+
+
+
+source ~/.bash_profile
+
+module load ANGSD/0.911
+
+cd ${PBS_O_WORKDIR} || exit
+
+
+subset=`basename ${subset_list} _list`
+
+
+angsd -P 28  -bam ${subset_list} -GL 1 -doCounts 1 -doMaf 1 -doDepth 1 -doQsDist 1 -doGlf 1 -doMajorMinor 1 -doGeno 8 -doPost 1 -minQ 15 -minMapQ 20 -minMaf 0.05 -doSaf 1 -uniqueOnly 1 -remove_bads 1 -anc ${rapa} /mnt/ -setMaxDepthInd 100 -minInd  ${n80} -out ANGSD/${subset}_angsd
+
+#angsd -bam ${subset_list} -domaf 1 -domajorminor 1 -gl 1 -snp_pval 1e-2  -P 5 -dosnpstat 1 -hwe_pval 1e-2 -out ${subset}_snp_angsd
