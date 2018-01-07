@@ -26,7 +26,7 @@ subset=`basename ${subset_list} _list`
 # calling model is recommended for most tasks.
 
 
-mkdir ${subset}_${dt}
+mkdir ${subset}_bcf_${dt}
 cd ${subset}_${dt} || exit
 
 samtools merge -b ../${subset_list} -f ${subset}.bam
