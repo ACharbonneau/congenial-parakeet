@@ -250,7 +250,7 @@ Just_Rsat   <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Just_Rsat, ignore.
 write.table(paste( " --variant ", Just_Rsat, sep=""), file = "../Metadata/SS_Rsat_cs_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
 #RRR and landra
-Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr" | ForStacksSSUniq$Species.x == "Rrl"]
+Rrr_landra <- ForStacksSSUniq$UniqID[ForStacksSSUniq$Species.y == "Rrr" | ForStacksSSUniq$Species.y == "Rrl"]
 write.table(Rrr_landra, file = "../Metadata/SS_RrrRrl_list", quote = F, col.names = F, row.names = F)
 Rrr_landra  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", Rrr_landra, ignore.case = FALSE )
 write.table(paste( " --variant ", Rrr_landra, sep=""), file = "../Metadata/SS_RrrRrl_gatk_list", quote = F, col.names = F, row.names = F, eol = "")

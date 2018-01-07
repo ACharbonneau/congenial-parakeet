@@ -41,7 +41,6 @@ echo "3. Setting up workspace"
 
 mkdir ProcessRadtags
 mkdir ProcessRadtags/Indicies
-mkdir ProcessRadtags/ANGSD
 mkdir ProcessRadtags/TrimmedFQC
 
 
@@ -57,6 +56,7 @@ cd ProcessRadtags/Indicies || exit
 ln -sf /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta .
 qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT -v genome=RrContigs.fa.fasta
 gunzip -c /mnt/research/radishGenomics/PublicData/brassica_rapa/Brapa_sequence_v1.5.fa.gz > Brapa_sequence_v1.5.fa
+qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Brapa_BT -v genome=Brapa_sequence_v1.5.fa
 
 cd ../../RawFastq/ || exit
 
