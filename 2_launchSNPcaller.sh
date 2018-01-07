@@ -9,6 +9,7 @@ qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequenc
 qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,enome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/AE_Mapping_list",n80=868,dt=`date '+%Y%m%d'`
 qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,enome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/SS_Rrl_list",n80=76,dt=`date '+%Y%m%d'`
 qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,enome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/SS_RrrRrl_list",n80=140,dt=`date '+%Y%m%d'`
+qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,enome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/NA_blank_list",n80=20,dt=`date '+%Y%m%d'`
 
 
 qsub ../congenial-parakeet/2.1_BCF_CallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/AE_F0_list",n80=68,dt=`date '+%Y%m%d'`
@@ -20,6 +21,7 @@ qsub ../congenial-parakeet/2.1_BCF_CallSNPS.qsub -v rapa=Indicies/Brapa_sequence
 qsub ../congenial-parakeet/2.1_BCF_CallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/AE_Mapping_list",n80=868,dt=`date '+%Y%m%d'`
 qsub ../congenial-parakeet/2.1_BCF_CallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/SS_Rrl_list",n80=76,dt=`date '+%Y%m%d'`
 qsub ../congenial-parakeet/2.1_BCF_CallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/SS_RrrRrl_list",n80=140,dt=`date '+%Y%m%d'`
+qsub ../congenial-parakeet/2.1_BCF_CallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,enome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/NA_blank_list",n80=20,dt=`date '+%Y%m%d'`
 
 
 qsub ../congenial-parakeet/2.1_GATKCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/AE_F0_gatk_list",n80=68,dt=`date '+%Y%m%d'`
