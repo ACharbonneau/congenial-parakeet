@@ -18,8 +18,6 @@ subset=`basename ${subset_list} _list`
 
 mkdir ${subset}_gatk_${dt}
 
-cd ${subset}_gatk_${dt} || exit
+java -Xmx20g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T GenotypeGVCFs -R ${genome} -o ${subset}.gatk.vcf  `cat ${subset_list}` -nt 27
 
-java -Xmx20g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T GenotypeGVCFs -R ../${genome} -o ${subset}.gatk.vcf  `cat ../${subset_list}` -nt 27
-
-#angsd -bam ${subset_list} -domaf 1 -domajorminor 1 -gl 1 -snp_pval 1e-2  -P 5 -dosnpstat 1 -hwe_pval 1e-2 -out ${subset}_snp_angsd
+mv ${subset}.gatk.vcf ${subset}_gatk_${dt}
