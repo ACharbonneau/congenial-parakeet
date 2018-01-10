@@ -1,0 +1,21 @@
+#!/bin/sh -login
+#PBS -j oe
+#PBS -l nodes=1:ppn=28,walltime=04:00:00,mem=20gb
+#PBS -m a
+#PBS -l feature='intel16'
+
+
+
+source ~/.bash_profile
+
+module load GATK/3.7.0
+module load picardTools/1.89
+
+
+cd ${PBS_O_WORKDIR} || exit
+
+subset=`basename ${subset_list} _list`
+
+java -Xmx20g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T CombineGVCFs -R ${genome} -o ${subset}.gatk.g.vcf  `cat ${subset_list}` -nt 27
+
+qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=${rapa},genome=${genome},subset_list=${subset_list},n80=${n80},dt=${dt},subset=${subset}

@@ -14,10 +14,8 @@ module load picardTools/1.89
 
 cd ${PBS_O_WORKDIR} || exit
 
-subset=`basename ${subset_list} _list`
-
 mkdir ${subset}_gatk_${dt}
 
-java -Xmx20g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T GenotypeGVCFs -R ${genome} -o ${subset}.gatk.vcf  `cat ${subset_list}` -nt 27
+java -Xmx20g -cp $GATK -jar $GATK/GenomeAnalysisTK.jar -T GenotypeGVCFs -R ${genome} -o ${subset}.gatk.vcf --variant ${subset}.gatk.g.vcf -nt 27
 
 mv ${subset}.gatk.vcf ${subset}_gatk_${dt}
