@@ -25,7 +25,7 @@ echo "2. Getting MetaData"
 
 cd ../ || exit
 mkdir Metadata/
-ln -sf /mnt/research/radishGenomics/PublicData/alladaptors.fa .
+ln -sf /mnt/research/radishGenomics/PublicData/alladaptors.fa Metadata/
 cp -r /mnt/research/radishGenomics/OriginalSequencingFiles/GBS_Cornell_2015/Metadata/ Metadata/OriginalFiles/
 mv Metadata/OriginalFiles/PlateInfoSeq/ Metadata/PlateInfoSeq/
 mv Metadata/OriginalFiles/SequencerQC Metadata/SequencerQC
@@ -55,13 +55,5 @@ mkdir fastQC/TrimmedFQC
 cd ProcessRadtags/Indicies || exit
 ln -sf /mnt/research/radishGenomics/AnalysisOfSequencingFiles/MoghePublished/RrContigs.fa.fasta .
 qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Moghe2014_BT -v genome=RrContigs.fa.fasta
-gunzip -c /mnt/research/radishGenomics/PublicData/brassica_rapa/Brapa_sequence_v1.5.fa.gz > Brapa_sequence_v1.5.fa
-qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Brapa_BT -v genome=Brapa_sequence_v1.5.fa
-
-cd ../../RawFastq/ || exit
-
-ThisT=`ls *fastq.gz | wc -w`
-ThisT=`expr ${ThisT} - 1`
-#qsub ../congenial-parakeet/1.1_FastQC.qsub -t 0-${ThisT}
-
-qsub ../congenial-parakeet/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
+#gunzip -c /mnt/research/radishGenomics/PublicData/brassica_rapa/Brapa_sequence_v1.5.fa.gz > Brapa_sequence_v1.5.fa
+#qsub ../../congenial-parakeet/1.1_BT2_build.qsub -N Brapa_BT -v genome=Brapa_sequence_v1.5.fa

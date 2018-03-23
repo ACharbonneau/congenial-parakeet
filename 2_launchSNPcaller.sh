@@ -1,5 +1,9 @@
 #!/bin/sh
 
+mkdir QsubOutput
+
+mv TrimmingReads.o* QsubOutput
+
 qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/AE_F0_list",n80=68,dt=`date '+%Y%m%d'`
 qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/AE_F2_list",n80=800,dt=`date '+%Y%m%d'`
 qsub ../congenial-parakeet/2.1_angsdCallSNPS.qsub -v rapa=Indicies/Brapa_sequence_v1.5.fa,genome=Indicies/RrContigs.fa.fasta,subset_list="../Metadata/SS_list",n80=207,dt=`date '+%Y%m%d'`

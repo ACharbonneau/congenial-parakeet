@@ -40,3 +40,11 @@ java -jar $PICARD/CreateSequenceDictionary.jar R=${genome} O=`basename ${genome}
 # and a fasta index
 
 samtools faidx ${genome}
+
+cd ../../RawFastq/ || exit
+
+ThisT=`ls *fastq.gz | wc -w`
+ThisT=`expr ${ThisT} - 1`
+#qsub ../congenial-parakeet/1.1_FastQC.qsub -t 0-${ThisT}
+
+qsub ../congenial-parakeet/1.1_ProcessRadtags.qsub -N ProcessingRads -t 0-${ThisT}
