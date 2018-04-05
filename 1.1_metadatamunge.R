@@ -319,43 +319,43 @@ write.table(paste( " --variant ", All_SS, sep=""), file = "../Metadata/SS_all_ga
 
 for (pop1 in landras) {
   for (pop2 in weeds) {
-    write.table(paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_pairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+    write.table(paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatkpairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
   }
 }
 
 for (pop1 in Nrrrs) {
   for (pop2 in weeds) {
-    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_pairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatkpairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
   }
 }
 
 for (pop1 in crops) {
   for (pop2 in weeds) {
-    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_pairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatkpairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
   }
 }
 
 for (pop1 in pugs) {
   for (pop2 in weeds) {
-    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_pairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatkpairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
   }
 }
 
 for (pop1 in landras) {
   for (pop2 in crops) {
-    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_pairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatkpairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
   }
 }
 
 for (pop1 in Nrrrs) {
   for (pop2 in crops) {
-    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_pairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatkpairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
   }
 }
 
 for (pop1 in pugs) {
   for (pop2 in crops) {
-    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_pairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatkpairlist", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
   }
 }
 
