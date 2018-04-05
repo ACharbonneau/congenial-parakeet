@@ -313,7 +313,7 @@ for (pop1 in pugs) {
 
 #All signature of selection for gatk
 All_SS  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", All_SS, ignore.case = FALSE )
-write.table(paste( " --variant ", All_SS, sep=""), file = "../Metadata/SS_all_gatk_pairlist", quote = F, col.names = F, row.names = F, eol = "")
+write.table(paste( " --variant ", All_SS, sep=""), file = "../Metadata/SS_all_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
 #Pairwise signature of selection for gatk
 
