@@ -261,8 +261,61 @@ write.table(paste( " --variant ", Rrr_landra, sep=""), file = "../Metadata/SS_Rr
 #All signature of selection
 All_SS <- ForStacksSSUniq$UniqID
 write.table(All_SS, file = "../Metadata/SS_list", quote = F, col.names = F, row.names = F)
+
+#Pairwise signature of selection
+landras <- c("PBFR", "SAES", "RA808", "RA761", "RA226", "RA444")
+weeds <- c("BINY", "NAAU")
+Nrrrs <- c("MAES", "AFFR", "DEES")
+crops <- c("NELO", "TOBG", "ESNK", "SPNK", "RACA", "RABG", "AROL", "OIBG")
+pugs <- c("GMIL", "YEIL")
+
+for (pop1 in landras) {
+  for (pop2 in weeds) {
+    write.table( All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], file = paste("../Metadata/",pop1,"_", pop2,"_list", sep=""), quote = F, col.names = F, row.names = F)
+  }
+}
+
+for (pop1 in Nrrrs) {
+  for (pop2 in weeds) {
+    write.table( All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], file = paste("../Metadata/",pop1,"_", pop2,"_list", sep=""), quote = F, col.names = F, row.names = F)
+  }
+}
+
+for (pop1 in crops) {
+  for (pop2 in weeds) {
+    write.table( All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], file = paste("../Metadata/",pop1,"_", pop2,"_list", sep=""), quote = F, col.names = F, row.names = F)
+  }
+}
+
+for (pop1 in pugs) {
+  for (pop2 in weeds) {
+    write.table( All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], file = paste("../Metadata/",pop1,"_", pop2,"_list", sep=""), quote = F, col.names = F, row.names = F)
+  }
+}
+
+for (pop1 in landras) {
+  for (pop2 in crops) {
+    write.table( All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], file = paste("../Metadata/",pop1,"_", pop2,"_list", sep=""), quote = F, col.names = F, row.names = F)
+  }
+}
+
+for (pop1 in Nrrrs) {
+  for (pop2 in crops) {
+    write.table( All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], file = paste("../Metadata/",pop1,"_", pop2,"_list", sep=""), quote = F, col.names = F, row.names = F)
+  }
+}
+
+for (pop1 in pugs) {
+  for (pop2 in crops) {
+    write.table( All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], file = paste("../Metadata/",pop1,"_", pop2,"_list", sep=""), quote = F, col.names = F, row.names = F)
+  }
+}
+
+#All signature of selection for gatk
 All_SS  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", All_SS, ignore.case = FALSE )
 write.table(paste( " --variant ", All_SS, sep=""), file = "../Metadata/SS_all_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
+
+
 
 
 
