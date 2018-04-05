@@ -315,6 +315,50 @@ for (pop1 in pugs) {
 All_SS  <- gsub( '_q20.final.bam', "_raw_variants.g.vcf", All_SS, ignore.case = FALSE )
 write.table(paste( " --variant ", All_SS, sep=""), file = "../Metadata/SS_all_gatk_list", quote = F, col.names = F, row.names = F, eol = "")
 
+#Pairwise signature of selection for gatk
+
+for (pop1 in landras) {
+  for (pop2 in weeds) {
+    write.table(paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_list", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+  }
+}
+
+for (pop1 in Nrrrs) {
+  for (pop2 in weeds) {
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_list", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+  }
+}
+
+for (pop1 in crops) {
+  for (pop2 in weeds) {
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_list", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+  }
+}
+
+for (pop1 in pugs) {
+  for (pop2 in weeds) {
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_list", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+  }
+}
+
+for (pop1 in landras) {
+  for (pop2 in crops) {
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_list", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+  }
+}
+
+for (pop1 in Nrrrs) {
+  for (pop2 in crops) {
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_list", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+  }
+}
+
+for (pop1 in pugs) {
+  for (pop2 in crops) {
+    write.table( paste( " --variant ", All_SS[grepl( pop1, All_SS) | grepl( pop2, All_SS)], sep=""), file = paste("../Metadata/",pop1,"_", pop2,"_gatk_list", sep=""),  quote = F, col.names = F, row.names = F, eol = "")
+  }
+}
+
 
 
 
